@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Display Images{% endblock %}
+
+{% block content %}
+    <h1>Captured Images</h1>
+
+    <br>
+    <form action="/train_images" 
+    method="post">
+        <select name="name" class="form-control" id="name-select">
+            <option value=" " >Name</option>
+            {% for option in data %}
+            <option value="{{ option }}">{{ option }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="btn btn-primary">Train Images</button>
+    </form>
+    <br>
+    {% if message %}
+    <p>{{ message }}</p>
+{% endif %}
+    {% if image_paths %}
+            {% for image_path in image_paths %}
+            <img src="{{ image_path }}" alt="{{ image_path }}" style="height: 185px; width: 185px;">
+            {% endfor %}
+    
+    {% else %}
+        <p>No images captured yet.</p>
+    {% endif %}
+{% endblock %}
+
+

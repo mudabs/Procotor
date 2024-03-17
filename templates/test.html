@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select List Demo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<body>
+    <form id="myForm">
+        <select id="mySelect" name ="mySelect">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+        </select>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        $("#mySelect").change(function() {
+            $.ajax({
+                url: "{{ url_for('process_selection') }}", // Route for handling POST request
+                type: "POST",
+                data: $("#myForm").serialize(),
+                success: function(response) {
+                    $("#results").html(response); // Display response in a designated element
+                }
+            });
+        });
+    </script>
+</body>
+</html>

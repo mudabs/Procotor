@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron p-3">
+                <h2>Manage <b>Lecturers </b> <button type="button" class="btn btn-outline-success float-end"
+                        data-bs-toggle="modal" data-bs-target="#mymodal">Add New Lecturer</button> </h2>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                {% for message in messages %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {{message}}
+                </div>
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <th> </th>
+
+                    </tr>
+                    {% for lecturer in lecturers %}
+                    <tr>
+                        <td>{{ lecturer.name }}</td>
+                        <td>
+                            <a href="/update/{{lecturer.id}}" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modaledit{{lecturer.id}}">Edit</a>
+                            <a href="/deleteLecturers/{{lecturer.id}}" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% for lecturer in lecturers %}
+
+                <!-- Modal Add Employee-->
+                <div id="mymodal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Employee</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('createLecturers')}}" method="POST">
+                                    <div class="form-group">
+                                        <label><b>Lecturer</b>:</label>
+                                        <input type="text" class="form-control" name="lecturerName" required="1">
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Add Lecturer</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Employee-->
+                <div id="modaledit{{lecturer.id}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Update Questions</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('updateLecturers')}}" method="POST">
+                                    <div class="form-group">
+                                        <label>Question:</label>
+                                        <input type="hidden" name="id" value="{{lecturer.id}}">
+                                        <input type="text" class="form-control" name="name"
+                                            value="{{lecturer.name}}">
+                                    </div>
+<br>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

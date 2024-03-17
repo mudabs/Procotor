@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Display Images{% endblock %}
+
+{% block content %}
+<h1>Captured Images</h1>
+
+<br>
+<form id="myForm">
+    <select name="name" class="form-control" id="user-select">
+        <option value="">Select Name</option>
+        {% for option in data %}
+        <option value="{{option.name}}">{{option.name}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button type="submit" class="btn btn-primary">Train Images</button>
+</form>
+<br>
+{% if message %}
+<p>{{ message }}</p>
+{% endif %}
+<h1>Images</h1>
+<div id="images" name="images">
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<script>
+    $("#user-select").change(function() {
+        $.ajax({
+            url: "{{ url_for('get_images') }}", // Route for handling POST request
+            type: "POST",
+            data: { name: $(this).val() },
+            success: function(response) {
+                const data = JSON.parse(response);
+                $("#images").html(
+                );
+                data.images.forEach(image => {
+                    $("#images").append("<img src='../static/images/" + image + "'alt=''  style='height: 185px; width: 185px;'>");
+                
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

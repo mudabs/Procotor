@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Capture Image{% endblock %}
+
+{% block content %}
+
+    <h1>Image Capture App</h1>
+    <form id="myForm" >
+        <label for="name">Enter your name:</label>
+        <input type="text" id="name" name="name" class="form-control"required>
+        <br>
+        <label for="id">Enter your Id:</label>
+        <input type="number" id="id" name="id" class="form-control" required>
+        <input type="hidden" name="text3" id="text3" value = "True">
+        <br>
+        <button type="submit" class="btn btn-primary">Capture Images</button>
+    </form>
+    <br>
+    <div>
+    <img id="video-feed" src="{{ url_for('captureRender') }}" alt="Video Feed">
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('#myForm').submit(function(event){
+            event.preventDefault(); // Prevent default form submission
+
+            // Get form data
+            var formData = {
+                'name': $('#name').val(),
+                'id': $('#id').val(),
+                'text3': $('#text3').val()
+            };
+
+            // Send form data via AJAX
+            $.ajax({
+                type: 'POST',
+                url: '/captureDetails', // Change this to your Flask URL
+                data: formData,
+                success: function(response) {
+                    console.log('Form submitted successfully');
+                    // Handle success response if needed
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    // Handle error response if needed
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
+

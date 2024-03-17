@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron p-3">
+                <h2>Manage <b>Questions </b> <button type="button" class="btn btn-outline-success float-end"
+                        data-bs-toggle="modal" data-bs-target="#mymodal">Add New Questions</button> </h2>
+                
+                <!-- Display Course Title -->
+                {%for course in courses %}
+                <h4>{{course.courseTitle}}</h4>
+                {%for lecturer in lecturers %}
+                {%if lecturer.id == course.lecturerId %}
+                   <h5>{{lecturer.name}}</h5> 
+                {%endif%}
+                {%endfor%}
+                {%endfor%}
+
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                {% for message in messages %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {{message}}
+                </div>
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <th>Question</th>
+                        <th>Answers</th>
+                        <th> </th>
+
+                    </tr>
+                    {% for question in questions%}
+                    <tr>
+                        <td>{{ question.question }}</td>
+                    
+                        <td>
+                            <ul style="list-style-type: none;">
+                                {% for answer in answers[question.id] %}
+                                <li>
+                                    <input type="radio" name="check" id="" value="{{ answer.answer }}">
+                                    <label for="check">{{ answer.answer }}</label>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                  
+                        <td>
+                            <a href="/update/{{question.id}}" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modaledit{{question.id}}">Edit</a>
+                            <a href="/deleteQuestions/{{question.id}}" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% for question in questions %}
+                <!-- Modal Edit Question-->
+                <div id="modaledit{{question.id}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Update Questions</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('update')}}" method="POST">
+                                    <div class="form-group">
+                                        {%for course in courses %}
+                                        <label>Question:</label>
+                                        <input type="hidden" name="id" value="{{question.id}}">
+                                        <input type="hidden" name="courseId" value="{{course.id}}">
+                                        <input type="hidden" name="lecturerId" value="{{course.lecturerId}}">
+                                        {%endfor%}
+                                        <input type="text" class="form-control" name="question"
+                                            value="{{question.question}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Answers:</label>
+                                        {% for answer in answers[question.id] %}
+                                        <input type="text" class="form-control" name="answer_{{ answer.id }}"
+                                            value="{{answer.answer}}">
+                                        <br>
+                                        {% endfor %}
+                                    </div>
+<br>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Modal Add Question-->
+                <div id="mymodal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Employee</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('insert')}}" method="POST">
+                                    <div class="form-group">
+                                        {%for course in courses %}
+                                        <label><b>Question</b>:</label>
+                                        <input type="hidden" name="courseId" value="{{course.id}}">
+                                        <input type="hidden" name="lecturerId" value="{{course.lecturerId}}">
+                                        <input type="text" class="form-control" name="question" required="1">
+                                        {%endfor%}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Answer 1:</label>
+                                        <input type="text" class="form-control" name="answer1" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Answer 2:</label>
+                                        <input type="text" class="form-control" name="answer2" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Answer 3:</label>
+                                        <input type="text" class="form-control" name="answer3" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Answer 4:</label>
+                                        <input type="text" class="form-control" name="answer4" required="1">
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Add Question</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <br>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {% endblock %}

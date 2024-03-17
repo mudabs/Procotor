@@ -1,0 +1,136 @@
+{% extends "proctorbase.html" %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Proctoring{%endblock%}</title>
+
+<!-- Load Files -->
+
+ 
+
+{% block cssimports %}
+
+{% endblock %}
+
+<!-- Load Files -->
+
+
+
+</head>
+<body>
+    {% block top_navigation %}  
+    <h1>Proctoring
+
+    </h1>
+    {% endblock %}
+
+    {% block proctor %}
+    <div>
+        <img id="video-feed" src="{{ url_for('video') }}" alt="Video Feed" style="width: 250px;">
+    </div>
+
+    <ul>
+        <li>Cheating: {{ data['cheat'] }}</li>
+        <li>Lips Movement: {{ data['lips'] }}</li>
+        <li>Direction: {{ data['direction'] }}</li>
+        <li>Cellphone Usage: {{ data['cellphone'] }}</li>
+        <li>Identity: {{ data['identity'] }}</li>
+        <li>Liveness: {{ data['liveness'] }}</li>
+    </ul>
+
+    {% endblock %}
+
+
+    {% block content %}
+    <!-- <div>
+        <img id="video-feed" src="{{ url_for('video') }}" alt="Video Feed">
+    </div> -->
+
+    <!-- Graph -->
+    <div class="container-fluid">
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="container-fluid" id="data-container"></div>
+        </div>
+    </div>
+
+    <!-- <div class="ct-chart ct-perfect-fourth"></div> -->
+    
+    {% endblock %}
+
+  {% block jsimports %}
+      
+ 
+
+     <!-- JQuery links  -->
+  <script src="../static/js/jquery.min.js"></script> 
+   
+  <!--High CHART LIVE  -->
+  <script src="../static/js/highcharts.js"></script>
+
+    <script>
+        var chart;
+
+        function requestData()
+        {
+            // Ajax call to get the Data from Flask
+            var requests = $.get('/Humidity/humidity');
+
+            // request is complete
+            var tm = requests.done(function (result)
+            {
+
+                console.log("TEMPERATURE", result.temperature);
+                var series = chart.series[0],
+                    shift = series.data.length > 20;
+
+                // add the point
+                chart.series[0].addPoint(result, true, shift);
+
+                // call it again after one second
+                setTimeout(requestData, 2000);
+
+            });
+        }
+
+        $(document).ready(function() {
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'data-container',
+                    defaultSeriesType: 'spline',
+                    events: {
+                        load: requestData
+                    }
+                },
+                title: {
+                    text: 'Head Pose Estimation'
+                },
+                // Tweak this value for graph optimisation
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150,
+                    maxZoom: 20 * 1000
+                },
+                yAxis: {
+                    minPadding: 0.2,
+                    maxPadding: 0.2,
+                    title: {
+                        text: 'Value',
+                        margin: 80
+                    }
+                },
+                series: [{
+                    name: 'Current Time',
+                    data: []
+                }]
+            });
+        });
+
+    </script>
+<!-- Graph -->
+
+{% endblock %}
+
+</body>
+</html>

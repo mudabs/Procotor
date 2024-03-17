@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %} Courses {% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron p-3">
+                <h2>Manage <b>Courses </b> <button type="button" class="btn btn-outline-success float-end" data-bs-toggle="modal"
+                        data-bs-target="#mymodal">Add New Course</button> </h2>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                {% for message in messages %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {{message}}
+                </div>
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <th>Lecturer</th>
+                        <th> </th>
+
+                    </tr>
+                    {% for course in courses %}
+                    <tr>
+
+                        <td>{{ course.courseTitle }}</td>
+                        {% for lecturer in lecturers %}
+                        {% if lecturer.id == course.lecturerId %}
+                        <td>{{ lecturer.name }}</td> {% endif %}
+                        {% endfor %}
+                        <td>
+                            <a href="/update/{{course.id}}" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modaledit{{course.id}}">Edit</a>
+                            <a href="/deleteCourse/{{course.id}}" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                            <a href="/viewQuestions/{{course.id}}" class="btn btn-success btn-sm">View Questions</a>
+                       
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% for course in courses %}
+
+                <!-- Modal Add Employee-->
+                <div id="mymodal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Employee</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('createCourse')}}" method="POST">
+                                    <div class="form-group">
+                                        <label><b>Course</b>:</label>
+                                        <input type="text" class="form-control" name="courseName" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b>Lecturer</b>:</label>
+                                        <select name="lecturerId" id="" class="form-control">
+                                            <option value=" ">Choose Lecturer</option>
+                                            {%for lecturer in lecturers%}
+                                            <option value="{{lecturer.id}}">{{lecturer.name}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Add
+                                            Course</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Employee-->
+                <div id="modaledit{{course.id}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Update Questions</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('updateCourse')}}" method="POST">
+                                    <div class="form-group">
+                                        <label><b>Course</b>:</label>
+                                        <input type="hidden" name="id" value="{{course.id}}">
+                                        <input type="text" class="form-control" name="courseName"
+                                            value="{{course.courseTitle}}">
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label><b>Lecturer</b>:</label>
+                                        <select name="lecturerId" id="" class="form-control">
+                                            {% for lecturer in lecturers %}
+                                            <option value="{{ lecturer.id }}" {% if lecturer.id==course.lecturerId
+                                                %}selected{% endif %}>{{ lecturer.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Update
+                                            Course</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
