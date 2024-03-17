@@ -1,1 +1,3 @@
-# Spoofing-FLASK
+# AI Proctoring System
+
+The system was developed with Flask
